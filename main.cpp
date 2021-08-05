@@ -7,5 +7,5 @@ using namespace __Type;
 
 int main() {
 	Type a(Int), b(Double), c(Char);
-	a = Type(Char, a.value(Int));
+	cout << a / b << '\n';
 }

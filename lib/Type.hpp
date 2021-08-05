@@ -44,8 +44,61 @@ tag_type get_tag(std::string _typename) {
 		throw TypeError("Invalid Declaration");
 	} catch(const TypeError& error) {
 		std::cerr << error;
+		return -1;
 	}
 }
+
+class NoneType {
+	public:
+	void operator()() {}
+} None;
+
+class IntType {
+	public:
+	template<class T=int> int operator()(T _v=T()) {
+		return _v;
+	}
+} Int;
+
+class DoubleType {
+	public:
+	template<class T=double> double operator()(T _v=T()) {
+		return _v;
+	}
+} Double;
+
+class LongLongType {
+	public:
+	template<class T=long long> long long operator()(T _v=T()) {
+		return _v;
+	}
+} LongLong;
+
+class LongDoubleType {
+	public:
+	template<class T=long double> long double operator()(T _v=T()) {
+		return _v;
+	}
+} LongDouble;
+
+class CharType {
+	public:
+	template<class T=char> char operator()(T _v=T()) {
+		return _v;
+	}
+} Char;
+
+
+class StringType {
+	public:
+	template<class T=std::string> std::string operator()(T _v=T()) {
+		return _v;
+	}
+} String;
+
+/*
+
+Type Declaration:
 
 class NoneType       {} None;
 class IntType        {} Int;
@@ -54,6 +107,8 @@ class LongLongType   {} LongLong;
 class LongDoubleType {} LongDouble;
 class CharType       {} Char;
 class StringType     {} String;
+
+*/
 
 /*
 switch(this->tag) {
@@ -109,6 +164,12 @@ class Type {
 	Type(LongDoubleType _LongDouble, long double _v=double()) { *this = Type(_v); }
 	Type(CharType _Char, char _v=char()) { *this = Type(_v); }
 	Type(StringType _String, std::string _v=std::string()) { *this = Type(_v); }
+	template<class T> Type(IntType _Int, T _v) { *this = Type((int)_v); }
+	template<class T> Type(DoubleType _Double, T _v) { *this = Type((double)_v); }
+	template<class T> Type(LongLongType _LongLong, T _v) { *this = Type((long long)_v); }
+	template<class T> Type(LongDoubleType _LongDouble, T _v) { *this = Type((long double)_v); }
+	template<class T> Type(CharType _Char, T _v) { *this = Type((char)_v); }
+	template<class T> Type(StringType _String, T _v) { *this = Type(std::to_string(_v)); }
 
 	// Member functions
 	std::string now_type() { 
@@ -118,6 +179,7 @@ class Type {
 			return support_types[tag]; 
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return "None";
 		}
 	}
 	int value(IntType& _Int) {
@@ -127,6 +189,7 @@ class Type {
 			return this->_int;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return int();
 		}
 	}
 	double value(DoubleType& _Double) {
@@ -136,6 +199,7 @@ class Type {
 			return this->_double;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return double();
 		}
 	}
 	long long value(LongLongType& _LongLong) {
@@ -145,6 +209,7 @@ class Type {
 			return this->_ll;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return int();
 		}
 	}
 	long double value(LongDoubleType& _LongDouble) {
@@ -154,6 +219,7 @@ class Type {
 			return this->_ld;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return double();
 		}
 	}
 	char value(CharType& _Char) {
@@ -163,6 +229,7 @@ class Type {
 			return this->_char;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return char();
 		}
 	}
 	std::string value(StringType& _String) {
@@ -172,6 +239,7 @@ class Type {
 			return this->_str;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return std::string();
 		}
 	}
 	unsigned int length() {
@@ -181,6 +249,7 @@ class Type {
 			return this->_str.length();
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return int();
 		}
 	}
 	std::string slice(const unsigned int _begin, const unsigned int _end) {
@@ -190,6 +259,7 @@ class Type {
 			return this->_str.substr(_begin, _end-_begin);
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return std::string();
 		}
 	}
 
@@ -201,6 +271,7 @@ class Type {
 			return this->_str[_index];
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return char();
 		}
 	}
 	Type operator+(Type type) {
@@ -232,6 +303,7 @@ class Type {
 			}
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return Type();
 		}
 	}
 	Type operator-(Type type) {
@@ -263,6 +335,7 @@ class Type {
 			}
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return Type();
 		}
 	}
 	Type operator*(Type type) {
@@ -294,6 +367,7 @@ class Type {
 			}
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return Type();
 		}
 	}
 	Type operator/(Type type) {
@@ -325,6 +399,7 @@ class Type {
 			}
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return Type();
 		}
 	}
 	Type operator+=(Type type)
@@ -363,6 +438,7 @@ class Type {
 			return *this;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return Type();
 		}
 	}
 	Type operator--() {
@@ -393,6 +469,7 @@ class Type {
 			return *this;
 		} catch(const TypeError& error) {
 			std::cerr << error;
+			return Type();
 		}
 	}
 	Type operator++(int) { Type ret(*this); operator++(); return ret; }
@@ -488,6 +565,7 @@ class Type {
 			} \
 		} catch(const TypeError& error) { \
 			std::cerr << error; \
+			return bool(); \
 		} 
 	bool operator<(Type type) { __PICK_TAG_COMPARE_CODE(<); }
 	bool operator>(Type type) { __PICK_TAG_COMPARE_CODE(>); }
@@ -497,6 +575,36 @@ class Type {
 	bool operator!=(Type type) { __PICK_TAG_COMPARE_CODE(!=); }
 #undef __PICK_TAG_COMPARE_CODE
 };
+
+template <class T>
+Type to_type(T& _Type, Type& var) {
+	switch(get_tag(var.now_type())) {
+		case int_tag:
+			return Type(_Type, var.value(Int));
+			break;
+		case double_tag:
+			return Type(_Type, var.value(Double));
+			break;
+		case long_long_tag:
+			return Type(_Type, var.value(LongLong));
+			break;
+		case long_double_tag:
+			return Type(_Type, var.value(LongDouble));
+			break;
+		case char_tag:
+			return Type(_Type, var.value(Char));
+			break;
+		case string_tag:
+			return Type(_Type, var.value(String));
+			break;
+		case None_tag:
+			return Type(_Type, _Type());
+			break;
+		default:
+			throw TypeError("Unkown bug");
+			break;
+	}
+}
 
 }
 
